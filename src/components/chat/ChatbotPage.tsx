@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Send, Bot, User, ArrowLeft, Paperclip, ThumbsDown, X, History } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
@@ -44,6 +45,7 @@ const PREDEFINED_QUESTIONS = [
 ];
 
 export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -272,7 +274,7 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => window.open('/chat-history', '_blank')}
+            onClick={() => navigate('/chat-history')}
             className="flex items-center gap-1 sm:gap-2"
           >
             <History className="h-4 w-4" />
@@ -281,7 +283,7 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => window.open('/queries', '_blank')}
+            onClick={() => navigate('/queries')}
             className="flex items-center gap-1 sm:gap-2"
           >
             <History className="h-4 w-4" />
