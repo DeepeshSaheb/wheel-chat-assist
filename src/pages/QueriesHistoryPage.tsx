@@ -85,10 +85,11 @@ const QueriesHistoryPage: React.FC = () => {
     return <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold text-foreground">Queries</h1>
             <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
+            <h1 className="text-3xl font-bold text-foreground">Queries</h1>
+            <div className="w-10"></div>
           </div>
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
@@ -100,10 +101,11 @@ const QueriesHistoryPage: React.FC = () => {
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Queries</h1>
           <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
+          <h1 className="text-3xl font-bold text-foreground">Queries</h1>
+          <div className="w-10"></div>
         </div>
 
         {queries.length === 0 ? <Card>
