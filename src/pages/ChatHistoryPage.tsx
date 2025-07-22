@@ -42,16 +42,15 @@ const ChatHistoryPage: React.FC = () => {
         return;
       }
 
-      // Fetch sessions with message count and last message
-      const {
-        data,
-        error
-      } = await supabase.from('chat_sessions').select(`
+      // Fetch sessions with message count and last message (only sessions with user messages)
+      const { data, error } = await supabase
+        .from('chat_sessions')
+        .select(`
           *,
-          chat_messages(content, created_at)
-        `).eq('user_id', user.id).order('updated_at', {
-        ascending: false
-      });
+          chat_messages(content, created_at, is_user)
+        `)
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false });
       if (error) {
         console.error('Error fetching sessions:', error);
         toast({
@@ -62,8 +61,12 @@ const ChatHistoryPage: React.FC = () => {
         return;
       }
 
-      // Process the data to add message count and last message
-      const processedSessions = data?.map(session => ({
+      // Process the data to add message count and last message (only include sessions with user messages)
+      const processedSessions = data?.filter(session => {
+        // Only include sessions that have at least one user message
+        const userMessages = session.chat_messages?.filter(msg => msg.is_user) || [];
+        return userMessages.length > 0;
+      }).map(session => ({
         ...session,
         message_count: session.chat_messages?.length || 0,
         last_message: session.chat_messages?.[session.chat_messages.length - 1]?.content || 'No messages yet'
