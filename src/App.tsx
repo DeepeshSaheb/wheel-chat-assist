@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import QueriesHistoryPage from "./pages/QueriesHistoryPage";
 import ChatHistoryPage from "./pages/ChatHistoryPage";
 import ChatSessionPage from "./pages/ChatSessionPage";
+import { ChatbotPage } from "./components/chat/ChatbotPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/chat" element={<ChatbotPage onBack={() => window.history.back()} />} />
             <Route path="/queries" element={<QueriesHistoryPage />} />
             <Route path="/chat-history" element={<ChatHistoryPage />} />
             <Route path="/chat/:sessionId" element={<ChatSessionPage />} />

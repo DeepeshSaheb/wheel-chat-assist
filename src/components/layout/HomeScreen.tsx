@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +18,6 @@ import {
   ChevronRight,
   Sparkles
 } from "lucide-react";
-import { ChatbotPage } from "@/components/chat/ChatbotPage";
 
 interface HomeScreenProps {
   mobile: string;
@@ -25,11 +25,7 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
-  const [currentView, setCurrentView] = React.useState<'home' | 'chat'>('home');
-
-  if (currentView === 'chat') {
-    return <ChatbotPage onBack={() => setCurrentView('home')} />;
-  }
+  const navigate = useNavigate();
 
   const supportOptions = [
     {
@@ -37,7 +33,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
       title: "Evolve - AI Assistant",
       description: "Get instant answers about your escooter",
       action: "Start Chat",
-      onClick: () => setCurrentView('chat'),
+      onClick: () => navigate('/chat'),
     }
   ];
 
