@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
@@ -8,11 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
-import { Plus, Edit, Trash2, LogOut } from "lucide-react";
+import { Plus, Edit, Trash2, LogOut, RefreshCw } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface DomainQuestion {
@@ -47,6 +47,45 @@ export const AdminDashboard = () => {
     },
   });
 
+  const fetchQuestions = async () => {
+    setIsLoading(true);
+    try {
+      console.log('Fetching domain questions...');
+      const { data, error } = await supabase
+        .from('domain_questions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      console.log('Questions data:', data);
+      console.log('Questions error:', error);
+
+      if (error) {
+        console.error('Error fetching questions:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load questions: " + error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setQuestions(data || []);
+      toast({
+        title: "Success",
+        description: `Loaded ${(data || []).length} questions`,
+      });
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load questions",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!roleLoading && userRole !== 'admin') {
       toast({
@@ -62,27 +101,6 @@ export const AdminDashboard = () => {
     }
   }, [userRole, roleLoading, toast]);
 
-  const fetchQuestions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('domain_questions')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setQuestions(data || []);
-    } catch (error) {
-      console.error('Error fetching questions:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load questions",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleSaveQuestion = async (data: QuestionFormData) => {
     try {
       if (editingQuestion) {
@@ -93,6 +111,7 @@ export const AdminDashboard = () => {
             question: data.question,
             category: data.category || null,
             is_active: data.is_active,
+            updated_at: new Date().toISOString(),
           })
           .eq('id', editingQuestion.id);
 
@@ -128,7 +147,7 @@ export const AdminDashboard = () => {
       console.error('Error saving question:', error);
       toast({
         title: "Error",
-        description: "Failed to save question",
+        description: "Failed to save question: " + (error as Error).message,
         variant: "destructive",
       });
     }
@@ -162,7 +181,7 @@ export const AdminDashboard = () => {
       console.error('Error deleting question:', error);
       toast({
         title: "Error",
-        description: "Failed to delete question",
+        description: "Failed to delete question: " + (error as Error).message,
         variant: "destructive",
       });
     }
@@ -172,7 +191,10 @@ export const AdminDashboard = () => {
     try {
       const { error } = await supabase
         .from('domain_questions')
-        .update({ is_active: !question.is_active })
+        .update({ 
+          is_active: !question.is_active,
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', question.id);
 
       if (error) throw error;
@@ -186,7 +208,7 @@ export const AdminDashboard = () => {
       console.error('Error toggling question status:', error);
       toast({
         title: "Error",
-        description: "Failed to update question status",
+        description: "Failed to update question status: " + (error as Error).message,
         variant: "destructive",
       });
     }
@@ -200,6 +222,58 @@ export const AdminDashboard = () => {
       is_active: true,
     });
     setIsDialogOpen(true);
+  };
+
+  // Add some sample questions if none exist
+  const addSampleQuestions = async () => {
+    try {
+      const sampleQuestions = [
+        {
+          question: "What are the company's core values and mission statement?",
+          category: "Company Culture",
+          is_active: true,
+        },
+        {
+          question: "How do I submit a vacation request?",
+          category: "HR Policies",
+          is_active: true,
+        },
+        {
+          question: "What is our customer service escalation process?",
+          category: "Customer Service",
+          is_active: true,
+        },
+        {
+          question: "How do I access the employee handbook?",
+          category: "HR Policies",
+          is_active: true,
+        },
+        {
+          question: "What are the project management best practices?",
+          category: "Operations",
+          is_active: true,
+        },
+      ];
+
+      const { error } = await supabase
+        .from('domain_questions')
+        .insert(sampleQuestions);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Sample questions added successfully",
+      });
+      fetchQuestions();
+    } catch (error) {
+      console.error('Error adding sample questions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add sample questions: " + (error as Error).message,
+        variant: "destructive",
+      });
+    }
   };
 
   if (roleLoading) {
@@ -226,7 +300,7 @@ export const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage domain-specific questions</p>
@@ -242,7 +316,7 @@ export const AdminDashboard = () => {
         </div>
 
         {/* Action Bar */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-semibold">Domain Questions</h2>
             <span className="text-sm text-muted-foreground">
@@ -250,101 +324,116 @@ export const AdminDashboard = () => {
             </span>
           </div>
           
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={openCreateDialog} className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Add Question
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[525px]">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingQuestion ? 'Edit Question' : 'Add New Question'}
-                </DialogTitle>
-              </DialogHeader>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSaveQuestion)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="question"
-                    rules={{ required: "Question is required" }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Question</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Enter the domain-specific question..."
-                            className="min-h-[100px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Category (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Technical, Business, General" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="is_active"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-base">Active</FormLabel>
-                          <div className="text-sm text-muted-foreground">
-                            Make this question available to users
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={fetchQuestions}
+              disabled={isLoading}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={openCreateDialog} className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  Add Question
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[525px]">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingQuestion ? 'Edit Question' : 'Add New Question'}
+                  </DialogTitle>
+                </DialogHeader>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(handleSaveQuestion)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="question"
+                      rules={{ required: "Question is required" }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Question</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Enter the domain-specific question..."
+                              className="min-h-[100px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Technical, Business, General" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="is_active"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">Active</FormLabel>
+                            <div className="text-sm text-muted-foreground">
+                              Make this question available to users
+                            </div>
                           </div>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="flex justify-end gap-2 pt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        setIsDialogOpen(false);
-                        setEditingQuestion(null);
-                        form.reset();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit">
-                      {editingQuestion ? 'Update' : 'Create'} Question
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="flex justify-end gap-2 pt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setIsDialogOpen(false);
+                          setEditingQuestion(null);
+                          form.reset();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit">
+                        {editingQuestion ? 'Update' : 'Create'} Question
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         {/* Questions List */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div>Loading questions...</div>
+            <div className="flex items-center gap-2">
+              <RefreshCw className="h-4 w-4 animate-spin" />
+              <span>Loading questions...</span>
+            </div>
           </div>
         ) : questions.length === 0 ? (
           <Card>
@@ -352,12 +441,17 @@ export const AdminDashboard = () => {
               <div className="text-center py-12">
                 <h3 className="text-lg font-semibold mb-2">No questions yet</h3>
                 <p className="text-muted-foreground mb-4">
-                  Start by creating your first domain-specific question.
+                  Start by creating your first domain-specific question or add some sample questions.
                 </p>
-                <Button onClick={openCreateDialog}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add First Question
-                </Button>
+                <div className="flex gap-2 justify-center">
+                  <Button onClick={openCreateDialog}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add First Question
+                  </Button>
+                  <Button variant="outline" onClick={addSampleQuestions}>
+                    Add Sample Questions
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -366,9 +460,9 @@ export const AdminDashboard = () => {
             {questions.map((question) => (
               <Card key={question.id}>
                 <CardContent className="pt-6">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                  <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <Switch
                           checked={question.is_active}
                           onCheckedChange={() => handleToggleActive(question)}
@@ -385,7 +479,7 @@ export const AdminDashboard = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-foreground mb-2">{question.question}</p>
+                      <p className="text-foreground mb-2 break-words">{question.question}</p>
                       <p className="text-xs text-muted-foreground">
                         Created: {new Date(question.created_at).toLocaleDateString()}
                         {question.updated_at !== question.created_at && (
@@ -393,7 +487,7 @@ export const AdminDashboard = () => {
                         )}
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <Button
                         variant="outline"
                         size="sm"
