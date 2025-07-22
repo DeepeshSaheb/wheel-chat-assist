@@ -156,11 +156,12 @@ const ChatHistoryPage: React.FC = () => {
   if (loading) {
     return <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-4 mb-8">
-            <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="flex items-center gap-2">
+          <div className="flex items-center justify-between mb-8">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
               <ArrowLeft className="w-4 h-4" />
-              Back to Home
             </Button>
+            <h1 className="text-3xl font-bold text-foreground">Chat History</h1>
+            <div className="w-10"></div>
           </div>
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
@@ -171,16 +172,12 @@ const ChatHistoryPage: React.FC = () => {
   }
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="flex items-center gap-2">
+        <div className="flex items-center justify-between mb-8">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
           </Button>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-foreground">Chat </h1>
-            
-          </div>
-          
+          <h1 className="text-3xl font-bold text-foreground">Chat History</h1>
+          <div className="w-10"></div>
         </div>
 
         {sessions.length === 0 ? <Card>
