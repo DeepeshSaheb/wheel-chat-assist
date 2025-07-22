@@ -148,7 +148,7 @@ const ChatSessionPage: React.FC = () => {
       if (!messagesData || messagesData.length === 0) {
         const welcomeMessage: Message = {
           id: 'welcome',
-          content: "Hi! I'm your electric scooter support assistant. How can I help you today? You can ask me anything, upload a file, or choose from the common questions below.",
+          content: "Hi! I'm Evolve, your AI assistant. How can I help you today? You can ask me anything, upload a file, or choose from the common questions below.",
           is_user: false,
           created_at: new Date().toISOString()
         };
@@ -407,9 +407,9 @@ const ChatSessionPage: React.FC = () => {
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-card p-4">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
+      <div className="border-b bg-card p-2 sm:p-4">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2 min-w-0">
             <Button
               variant="ghost"
               size="sm"
@@ -420,12 +420,12 @@ const ChatSessionPage: React.FC = () => {
               Back
             </Button>
             <Bot className="h-6 w-6 text-primary" />
-            <h1 className="text-lg font-semibold">{session.title}</h1>
+            <h1 className="text-base sm:text-lg font-semibold truncate">{session.title}</h1>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsTitleEditOpen(true)}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground flex-shrink-0"
             >
               <Edit className="h-4 w-4" />
             </Button>
@@ -434,34 +434,34 @@ const ChatSessionPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => navigate('/chat-history')}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-shrink-0"
           >
             <History className="h-4 w-4" />
-            All Chats
+            <span className="hidden sm:inline">All Chats</span>
           </Button>
         </div>
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-2 sm:p-4">
         <div className="space-y-4 max-w-4xl mx-auto">
           {messages.map((message) => (
             <div
               key={message.id}
               className={`flex gap-3 ${message.is_user ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex gap-3 max-w-[80%] ${message.is_user ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+              <div className={`flex gap-2 sm:gap-3 max-w-[85%] sm:max-w-[80%] ${message.is_user ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                   message.is_user ? 'bg-primary text-primary-foreground' : 'bg-muted'
                 }`}>
-                  {message.is_user ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                  {message.is_user ? <User className="w-3 h-3 sm:w-4 sm:h-4" /> : <Bot className="w-3 h-3 sm:w-4 sm:h-4" />}
                 </div>
-                <div className={`rounded-lg p-3 ${
+                <div className={`rounded-lg p-2 sm:p-3 ${
                   message.is_user 
                     ? 'bg-primary text-primary-foreground' 
                     : 'bg-muted'
                 }`}>
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <p className="whitespace-pre-wrap text-sm sm:text-base">{message.content}</p>
                   {message.file_url && message.file_name && (
                     <div className="mt-2 p-2 bg-background/10 rounded flex items-center gap-2">
                       <Paperclip className="w-4 h-4" />
@@ -509,9 +509,9 @@ const ChatSessionPage: React.FC = () => {
       </ScrollArea>
 
       {/* Predefined Questions */}
-      <div className="border-t bg-card p-4">
+      <div className="border-t bg-card p-2 sm:p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
             {PREDEFINED_QUESTIONS.map((question, index) => (
               <Button
                 key={index}
@@ -519,7 +519,7 @@ const ChatSessionPage: React.FC = () => {
                 size="sm"
                 onClick={() => sendMessage(question)}
                 disabled={isLoading}
-                className="text-sm"
+                className="text-xs sm:text-sm"
               >
                 {question}
               </Button>
@@ -529,13 +529,13 @@ const ChatSessionPage: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="border-t bg-card p-4">
+      <div className="border-t bg-card p-2 sm:p-4">
         <div className="max-w-4xl mx-auto">
           {selectedFile && (
-            <div className="mb-3 p-2 bg-muted rounded-lg flex items-center justify-between">
+            <div className="mb-2 sm:mb-3 p-2 bg-muted rounded-lg flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Paperclip className="w-4 h-4" />
-                <span className="text-sm">{selectedFile.name}</span>
+                <span className="text-xs sm:text-sm truncate max-w-[200px] sm:max-w-none">{selectedFile.name}</span>
               </div>
               <Button
                 variant="ghost"
@@ -547,14 +547,15 @@ const ChatSessionPage: React.FC = () => {
             </div>
           )}
           
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <div className="flex-1 flex gap-2">
+          <form onSubmit={handleSubmit} className="flex gap-1 sm:gap-2">
+            <div className="flex-1 flex gap-1 sm:gap-2">
               <Button
                 type="button"
                 variant="outline"
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
+                className="flex-shrink-0"
               >
                 <Paperclip className="w-4 h-4" />
               </Button>
@@ -570,13 +571,14 @@ const ChatSessionPage: React.FC = () => {
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               />
             </div>
             <Button
               type="submit"
               disabled={isLoading || (!newMessage.trim() && !selectedFile)}
               size="icon"
+              className="flex-shrink-0"
             >
               <Send className="w-4 h-4" />
             </Button>

@@ -47,7 +47,7 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm your electric scooter support assistant. How can I help you today? You can ask me anything, upload a file, or choose from the common questions below.",
+      text: "Hi! I'm Evolve, your AI assistant. How can I help you today? You can ask me anything, upload a file, or choose from the common questions below.",
       isUser: false,
       timestamp: new Date()
     }
@@ -59,6 +59,7 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   const [selectedMessageForFeedback, setSelectedMessageForFeedback] = useState<{ question: string; response: string } | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const feedbackForm = useForm<FeedbackForm>({
@@ -69,11 +70,12 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   });
 
   useEffect(() => {
-    // Scroll to bottom when new messages are added
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
+    scrollToBottom();
   }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const uploadFile = async (file: File): Promise<string | null> => {
     try {
@@ -256,194 +258,184 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center gap-4 p-4 border-b bg-card/80 backdrop-blur-sm">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+      <div className="flex items-center gap-2 sm:gap-4 p-2 sm:p-4 border-b bg-card">
+        <Button variant="ghost" size="sm" onClick={onBack} className="flex-shrink-0">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div className="flex items-center gap-2 flex-1">
-          <Bot className="h-6 w-6 text-primary" />
-          <h1 className="text-lg font-semibold">Scooter Support Chat</h1>
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
+          <h1 className="text-base sm:text-lg font-semibold truncate">Evolve</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => window.open('/chat-history', '_blank')}
-            className="flex items-center gap-2"
+            className="hidden sm:flex items-center gap-2"
           >
             <History className="h-4 w-4" />
-            Chat History
+            <span className="hidden md:inline">Chat History</span>
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => window.open('/queries', '_blank')}
-            className="flex items-center gap-2"
+            className="hidden sm:flex items-center gap-2"
           >
             <History className="h-4 w-4" />
-            Query History
+            <span className="hidden md:inline">Query History</span>
           </Button>
         </div>
       </div>
 
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex gap-3 ${message.isUser ? 'justify-end' : 'justify-start'}`}
-              >
-                {!message.isUser && (
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Bot className="h-4 w-4 text-primary" />
+      {/* Messages */}
+      <ScrollArea className="flex-1 p-2 sm:p-4">
+        <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex gap-2 sm:gap-3 ${message.isUser ? 'justify-end' : 'justify-start'}`}
+            >
+              <div className={`flex gap-2 sm:gap-3 max-w-[85%] sm:max-w-[80%] ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  message.isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                }`}>
+                  {message.isUser ? <User className="w-3 h-3 sm:w-4 sm:h-4" /> : <Bot className="w-3 h-3 sm:w-4 sm:h-4" />}
+                </div>
+                <div className={`rounded-lg p-2 sm:p-3 ${
+                  message.isUser 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-muted'
+                }`}>
+                  <p className="whitespace-pre-wrap text-sm sm:text-base">{message.text}</p>
+                  {message.fileUrl && message.fileName && (
+                    <div className="mt-2 p-2 bg-background/10 rounded flex items-center gap-2">
+                      <Paperclip className="w-4 h-4" />
+                      <span className="text-xs sm:text-sm truncate">{message.fileName}</span>
                     </div>
-                  </div>
-                )}
-                
-                <Card className={`max-w-[80%] ${message.isUser ? 'bg-primary text-primary-foreground' : 'bg-card'}`}>
-                  <CardContent className="p-3">
-                    <p className="text-sm whitespace-pre-wrap">{message.text}</p>
-                    {message.fileUrl && (
-                      <div className="mt-2">
-                        <a 
-                          href={message.fileUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-xs underline hover:no-underline"
-                        >
-                          📎 {message.fileName}
-                        </a>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between mt-2">
-                      <span className={`text-xs opacity-70 ${message.isUser ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      {!message.isUser && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            const userMessage = messages.find((m, index) => 
-                              index > 0 && messages[index - 1]?.id === message.id
-                            );
-                            const question = userMessage?.text || "Previous question";
-                            openFeedbackDialog(question, message.text);
-                          }}
-                          className="h-6 w-6 p-0 opacity-70 hover:opacity-100"
-                        >
-                          <ThumbsDown className="h-3 w-3" />
-                        </Button>
-                      )}
+                  )}
+                  {!message.isUser && (
+                    <div className="mt-2 flex justify-end">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const userMessage = messages.find((m, index) => 
+                            index > 0 && messages[index - 1]?.id === message.id
+                          );
+                          const question = userMessage?.text || "Previous question";
+                          openFeedbackDialog(question, message.text);
+                        }}
+                        className="text-muted-foreground hover:text-foreground h-auto p-1"
+                      >
+                        <ThumbsDown className="w-3 h-3" />
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {message.isUser && (
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <User className="h-4 w-4 text-primary" />
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex gap-3 justify-start">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Bot className="h-4 w-4 text-primary" />
+            </div>
+          ))}
+          
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="flex gap-2 sm:gap-3 max-w-[80%]">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-muted flex items-center justify-center">
+                  <Bot className="w-3 h-3 sm:w-4 sm:h-4" />
+                </div>
+                <div className="bg-muted rounded-lg p-2 sm:p-3">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
-                <Card className="bg-card">
-                  <CardContent className="p-3">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
-            )}
-          </div>
-        </ScrollArea>
-      </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
 
       {/* Predefined Questions */}
-      {messages.length === 1 && (
-        <div className="p-4 border-t bg-card/50">
-          <h3 className="text-sm font-medium mb-3 text-muted-foreground">Common Questions:</h3>
-          <div className="grid grid-cols-1 gap-2">
+      <div className="border-t bg-card p-2 sm:p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
             {PREDEFINED_QUESTIONS.map((question, index) => (
               <Button
                 key={index}
                 variant="outline"
-                className="justify-start text-left h-auto p-3 text-sm"
-                onClick={() => handlePredefinedQuestion(question)}
+                size="sm"
+                onClick={() => sendMessage(question)}
                 disabled={isLoading}
+                className="text-xs sm:text-sm"
               >
                 {question}
               </Button>
             ))}
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Input Form */}
-      <div className="p-4 border-t bg-card/80 backdrop-blur-sm">
-        {/* Selected File Display */}
-        {selectedFile && (
-          <div className="mb-3 p-2 bg-muted rounded-lg flex items-center justify-between">
-            <span className="text-sm">📎 {selectedFile.name}</span>
+      {/* Input Area */}
+      <div className="border-t bg-card p-2 sm:p-4">
+        <div className="max-w-4xl mx-auto">
+          {selectedFile && (
+            <div className="mb-2 sm:mb-3 p-2 bg-muted rounded-lg flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <Paperclip className="w-4 h-4 flex-shrink-0" />
+                <span className="text-xs sm:text-sm truncate">{selectedFile.name}</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={removeSelectedFile}
+                className="flex-shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit} className="flex gap-1 sm:gap-2">
+            <div className="flex-1 flex gap-1 sm:gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading}
+                className="flex-shrink-0"
+              >
+                <Paperclip className="w-4 h-4" />
+              </Button>
+              <Input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleFileSelect}
+                className="hidden"
+                accept=".txt,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+              />
+              <Input
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                placeholder="Type your message..."
+                disabled={isLoading}
+                className="flex-1 text-sm sm:text-base"
+              />
+            </div>
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={removeSelectedFile}
-              className="h-6 w-6 p-0"
+              type="submit"
+              disabled={isLoading || (!inputMessage.trim() && !selectedFile)}
+              size="icon"
+              className="flex-shrink-0"
             >
-              <X className="h-3 w-3" />
+              <Send className="w-4 h-4" />
             </Button>
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <div className="flex flex-1 gap-2">
-            <Input
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Type your question..."
-              disabled={isLoading}
-              className="flex-1"
-            />
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-              className="hidden"
-              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
-              className="px-3"
-            >
-              <Paperclip className="h-4 w-4" />
-            </Button>
-          </div>
-          <Button type="submit" disabled={isLoading || (!inputMessage.trim() && !selectedFile)}>
-            <Send className="h-4 w-4" />
-          </Button>
-        </form>
+          </form>
+        </div>
       </div>
 
       {/* Feedback Dialog */}
