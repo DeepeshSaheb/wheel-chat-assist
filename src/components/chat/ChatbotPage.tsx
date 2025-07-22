@@ -59,6 +59,7 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [selectedMessageForFeedback, setSelectedMessageForFeedback] = useState<{ question: string; response: string } | null>(null);
+  const [showPredefinedQuestions, setShowPredefinedQuestions] = useState(true);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -119,6 +120,9 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   };
 
   const sendMessage = async (message: string, file?: File) => {
+    // Hide predefined questions immediately when any message is sent
+    setShowPredefinedQuestions(false);
+    
     if (!message.trim() && !file) return;
 
     let fileUrl = null;
@@ -361,25 +365,30 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
         </div>
       </ScrollArea>
 
-      {/* Predefined Questions */}
-      <div className="border-t bg-card p-2 sm:p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
-            {PREDEFINED_QUESTIONS.map((question, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                onClick={() => sendMessage(question)}
-                disabled={isLoading}
-                className="text-xs sm:text-sm"
-              >
-                {question}
-              </Button>
-            ))}
+      {/* Predefined Questions - Only show for new chats */}
+      {showPredefinedQuestions && (
+        <div className="border-t bg-card p-2 sm:p-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
+              {PREDEFINED_QUESTIONS.map((question, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setShowPredefinedQuestions(false);
+                    sendMessage(question);
+                  }}
+                  disabled={isLoading}
+                  className="text-xs sm:text-sm"
+                >
+                  {question}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Input Area */}
       <div className="border-t bg-card p-2 sm:p-4">
