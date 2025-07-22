@@ -7,7 +7,6 @@ import { ArrowLeft, MessageCircle, Clock, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { format } from 'date-fns';
-
 interface ChatSession {
   id: string;
   title: string;
@@ -16,47 +15,49 @@ interface ChatSession {
   message_count?: number;
   last_message?: string;
 }
-
 const ChatHistoryPage: React.FC = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     fetchChatSessions();
   }, []);
-
   const fetchChatSessions = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser();
       if (!user) {
         toast({
           title: "Authentication required",
           description: "Please log in to view your chat history.",
-          variant: "destructive",
+          variant: "destructive"
         });
         navigate('/');
         return;
       }
 
       // Fetch sessions with message count and last message
-      const { data, error } = await supabase
-        .from('chat_sessions')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('chat_sessions').select(`
           *,
           chat_messages(content, created_at)
-        `)
-        .eq('user_id', user.id)
-        .order('updated_at', { ascending: false });
-
+        `).eq('user_id', user.id).order('updated_at', {
+        ascending: false
+      });
       if (error) {
         console.error('Error fetching sessions:', error);
         toast({
           title: "Error loading chat history",
           description: "Failed to load your chat sessions. Please try again.",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
@@ -67,114 +68,96 @@ const ChatHistoryPage: React.FC = () => {
         message_count: session.chat_messages?.length || 0,
         last_message: session.chat_messages?.[session.chat_messages.length - 1]?.content || 'No messages yet'
       })) || [];
-
       setSessions(processedSessions);
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
   };
-
   const createNewChat = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser();
       if (!user) {
         toast({
           title: "Authentication required",
           description: "Please log in to create a new chat.",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
-
-      const { data, error } = await supabase
-        .from('chat_sessions')
-        .insert([
-          {
-            user_id: user.id,
-            title: `Chat ${format(new Date(), 'MMM d, h:mm a')}`
-          }
-        ])
-        .select()
-        .single();
-
+      const {
+        data,
+        error
+      } = await supabase.from('chat_sessions').insert([{
+        user_id: user.id,
+        title: `Chat ${format(new Date(), 'MMM d, h:mm a')}`
+      }]).select().single();
       if (error) {
         console.error('Error creating session:', error);
         toast({
           title: "Error creating chat",
           description: "Failed to create a new chat session.",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
-
       navigate(`/chat/${data.id}`);
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
   const deleteSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    
     if (!confirm('Are you sure you want to delete this chat session? This action cannot be undone.')) {
       return;
     }
-
     try {
-      const { error } = await supabase
-        .from('chat_sessions')
-        .delete()
-        .eq('id', sessionId);
-
+      const {
+        error
+      } = await supabase.from('chat_sessions').delete().eq('id', sessionId);
       if (error) {
         console.error('Error deleting session:', error);
         toast({
           title: "Error deleting chat",
           description: "Failed to delete the chat session.",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
-
       setSessions(prev => prev.filter(s => s.id !== sessionId));
       toast({
         title: "Chat deleted",
-        description: "The chat session has been deleted successfully.",
+        description: "The chat session has been deleted successfully."
       });
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
+    return <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center gap-4 mb-8">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2"
-            >
+            <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back to Home
             </Button>
@@ -184,35 +167,23 @@ const ChatHistoryPage: React.FC = () => {
             <p className="mt-4 text-muted-foreground">Loading your chat history...</p>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2"
-          >
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Button>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-foreground">Chat History</h1>
-            <p className="text-muted-foreground">View and continue your previous conversations</p>
+            <h1 className="text-3xl font-bold text-foreground">Chat </h1>
+            
           </div>
-          <Button onClick={createNewChat} className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            New Chat
-          </Button>
+          
         </div>
 
-        {sessions.length === 0 ? (
-          <Card>
+        {sessions.length === 0 ? <Card>
             <CardContent className="text-center py-16">
               <MessageCircle className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-xl font-semibold mb-2">No chat sessions yet</h3>
@@ -224,26 +195,14 @@ const ChatHistoryPage: React.FC = () => {
                 Start New Chat
               </Button>
             </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {sessions.map((session) => (
-              <Card 
-                key={session.id} 
-                className="cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => navigate(`/chat/${session.id}`)}
-              >
+          </Card> : <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {sessions.map(session => <Card key={session.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/chat/${session.id}`)}>
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="text-lg text-foreground truncate">
                       {session.title}
                     </CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => deleteSession(session.id, e)}
-                      className="text-muted-foreground hover:text-destructive flex-shrink-0"
-                    >
+                    <Button variant="ghost" size="sm" onClick={e => deleteSession(session.id, e)} className="text-muted-foreground hover:text-destructive flex-shrink-0">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -260,13 +219,9 @@ const ChatHistoryPage: React.FC = () => {
                     {session.last_message}
                   </p>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+              </Card>)}
+          </div>}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ChatHistoryPage;
