@@ -34,7 +34,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
   const supportOptions = [
     {
       icon: Bot,
-      title: "AI Chat Assistant",
+      title: "Evolve - AI Assistant",
       description: "Get instant answers about your escooter",
       action: "Start Chat",
       onClick: () => setCurrentView('chat'),
@@ -136,6 +136,45 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
                 Book Test Ride
               </Button>
             </div>
+          </div>
+        </div>
+
+        {/* AI Assistant Section */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-foreground">Need Help?</h3>
+          
+          <div className="grid gap-4">
+            {supportOptions.map((option, index) => (
+              <Card 
+                key={index}
+                className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 cursor-pointer group"
+                onClick={option.onClick}
+              >
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-r from-primary to-primary-glow flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                      <option.icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-base sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300 truncate">
+                        {option.title}
+                      </h4>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {option.description}
+                      </p>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-primary hover:bg-primary/10 rounded-xl px-2 sm:px-3 flex-shrink-0"
+                    >
+                      <span className="hidden sm:inline">{option.action}</span>
+                      <ChevronRight className="w-4 h-4 sm:ml-1" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
 
@@ -246,44 +285,6 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
           </div>
         </div>
 
-        {/* Support Section */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-foreground">Need Help?</h3>
-          
-          <div className="grid gap-4">
-            {supportOptions.map((option, index) => (
-              <Card 
-                key={index}
-                className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 cursor-pointer group"
-                onClick={option.onClick}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-primary to-primary-glow flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <option.icon className="w-7 h-7 text-primary-foreground" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300">
-                        {option.title}
-                      </h4>
-                      <p className="text-muted-foreground">
-                        {option.description}
-                      </p>
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="text-primary hover:bg-primary/10 rounded-xl"
-                    >
-                      {option.action}
-                      <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
 
         {/* Recent Activity */}
         <div className="space-y-4">
