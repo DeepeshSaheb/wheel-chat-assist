@@ -434,7 +434,7 @@ const ChatSessionPage: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => navigate('/chat-history')}
-            className="flex items-center gap-2 flex-shrink-0"
+            className="flex items-center gap-1 sm:gap-2 flex-shrink-0"
           >
             <History className="h-4 w-4" />
             <span className="hidden sm:inline">All Chats</span>

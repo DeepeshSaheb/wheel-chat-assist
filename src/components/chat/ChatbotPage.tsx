@@ -273,19 +273,19 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
             variant="outline"
             size="sm"
             onClick={() => window.open('/chat-history', '_blank')}
-            className="hidden sm:flex items-center gap-2"
+            className="flex items-center gap-1 sm:gap-2"
           >
             <History className="h-4 w-4" />
-            <span className="hidden md:inline">Chat History</span>
+            <span className="hidden sm:inline">Chat History</span>
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => window.open('/queries', '_blank')}
-            className="hidden sm:flex items-center gap-2"
+            className="flex items-center gap-1 sm:gap-2"
           >
             <History className="h-4 w-4" />
-            <span className="hidden md:inline">Query History</span>
+            <span className="hidden sm:inline">Query History</span>
           </Button>
         </div>
       </div>
