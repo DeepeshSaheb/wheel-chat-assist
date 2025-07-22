@@ -412,12 +412,10 @@ const ChatSessionPage: React.FC = () => {
           <div className="flex items-center gap-2 min-w-0">
             <Button
               variant="ghost"
-              size="sm"
-              onClick={() => navigate('/chat-history')}
-              className="flex items-center gap-2"
+              size="icon"
+              onClick={() => navigate('/')}
             >
               <ArrowLeft className="h-4 w-4" />
-              Back
             </Button>
             <Bot className="h-6 w-6 text-primary" />
             <h1 className="text-base sm:text-lg font-semibold truncate">{session.title}</h1>
