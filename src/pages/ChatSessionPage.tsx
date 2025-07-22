@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDomainQuestions } from '@/hooks/useDomainQuestions';
+import { useAuth } from '@/context/AuthContext';
 import * as z from 'zod';
 
 interface Message {
