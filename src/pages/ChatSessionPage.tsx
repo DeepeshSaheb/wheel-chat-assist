@@ -524,7 +524,10 @@ const ChatSessionPage: React.FC = () => {
                   key={index}
                   variant="outline"
                   size="sm"
-                  onClick={() => sendMessage(question)}
+                  onClick={() => {
+                    setShowPredefinedQuestions(false);
+                    sendMessage(question);
+                  }}
                   disabled={isLoading}
                   className="text-xs sm:text-sm"
                 >
