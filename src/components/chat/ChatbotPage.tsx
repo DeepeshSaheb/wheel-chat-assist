@@ -40,6 +40,7 @@ interface ChatbotPageProps {
 export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   const navigate = useNavigate();
   const { questions: domainQuestions } = useDomainQuestions();
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -113,6 +114,64 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
     }
   };
 
+  const createChatSession = async (): Promise<string | null> => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from('chat_sessions')
+        .insert({
+          user_id: user.id,
+          title: 'New Chat'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data.id;
+    } catch (error) {
+      console.error('Error creating chat session:', error);
+      return null;
+    }
+  };
+
+  const saveMessageToDatabase = async (sessionId: string, content: string, isUser: boolean, fileUrl?: string, fileName?: string) => {
+    try {
+      const { error } = await supabase
+        .from('chat_messages')
+        .insert({
+          session_id: sessionId,
+          content,
+          is_user: isUser,
+          file_url: fileUrl,
+          file_name: fileName
+        });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving message:', error);
+    }
+  };
+
+  const updateSessionTitle = async (sessionId: string, firstMessage: string) => {
+    try {
+      // Extract first few words for title
+      const title = firstMessage.length > 50 
+        ? firstMessage.substring(0, 50) + '...' 
+        : firstMessage;
+
+      const { error } = await supabase
+        .from('chat_sessions')
+        .update({ title })
+        .eq('id', sessionId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating session title:', error);
+    }
+  };
+
   const sendMessage = async (message: string, file?: File) => {
     // Hide predefined questions immediately when any message is sent
     setShowPredefinedQuestions(false);
@@ -128,6 +187,21 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
       fileName = file.name;
     }
 
+    // Create session if this is the first user message
+    let currentSessionId = sessionId;
+    if (!currentSessionId) {
+      currentSessionId = await createChatSession();
+      if (!currentSessionId) {
+        toast({
+          title: "Error",
+          description: "Failed to create chat session. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSessionId(currentSessionId);
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       text: message || `Uploaded file: ${fileName}`,
@@ -141,6 +215,20 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
     setInputMessage('');
     setSelectedFile(null);
     setIsLoading(true);
+
+    // Save user message to database
+    await saveMessageToDatabase(
+      currentSessionId, 
+      userMessage.text, 
+      true, 
+      fileUrl || undefined, 
+      fileName || undefined
+    );
+
+    // Update session title with first message if this is the first user message
+    if (messages.length === 1) { // Only welcome message exists
+      await updateSessionTitle(currentSessionId, userMessage.text);
+    }
 
     try {
       const chatbotMessage = message || `I've uploaded a file named ${fileName}. Can you help me with it?`;
@@ -165,6 +253,9 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
       };
 
       setMessages(prev => [...prev, botMessage]);
+
+      // Save bot response to database
+      await saveMessageToDatabase(currentSessionId, botMessage.text, false);
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
@@ -181,6 +272,9 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
       };
 
       setMessages(prev => [...prev, errorMessage]);
+
+      // Save error message to database
+      await saveMessageToDatabase(currentSessionId, errorMessage.text, false);
     } finally {
       setIsLoading(false);
     }
