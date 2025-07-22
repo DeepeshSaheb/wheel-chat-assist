@@ -18,6 +18,7 @@ import {
   ChevronRight,
   Sparkles
 } from "lucide-react";
+import escooterHero from "@/assets/escooter-hero.jpg";
 
 interface HomeScreenProps {
   mobile: string;
@@ -107,30 +108,57 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
 
       {/* Main Content */}
       <main className="p-4 max-w-6xl mx-auto space-y-8">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card via-card/80 to-primary/5 p-8 border border-border/30" style={{ boxShadow: 'var(--shadow-card)' }}>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent"></div>
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
-                New Launch
-              </Badge>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-              Ride the Future with EcoRide
-            </h1>
-            <p className="text-lg text-muted-foreground mb-6 max-w-2xl">
-              Experience the next generation of electric scooters. Sustainable, powerful, and designed for the modern rider.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-xl shadow-lg shadow-primary/20">
-                Explore Models
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-              <Button variant="outline" className="px-6 py-3 rounded-xl border-primary/30 hover:bg-primary/5">
-                Book Test Ride
-              </Button>
+        {/* Hero Section with Escooter Image */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card via-card/80 to-primary/5 border border-border/30" style={{ boxShadow: 'var(--shadow-card)' }}>
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img 
+              src={escooterHero} 
+              alt="Modern Electric Scooter" 
+              className="w-full h-full object-cover opacity-20"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/40"></div>
+          </div>
+          
+          {/* Content */}
+          <div className="relative z-10 p-6 sm:p-8 lg:p-12">
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              {/* Text Content */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
+                    New Launch
+                  </Badge>
+                </div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+                  Ride the Future with EcoRide
+                </h1>
+                <p className="text-lg text-muted-foreground mb-6 max-w-xl">
+                  Experience the next generation of electric scooters. Sustainable, powerful, and designed for the modern rider.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-xl shadow-lg shadow-primary/20">
+                    Explore Models
+                    <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                  <Button variant="outline" className="px-6 py-3 rounded-xl border-primary/30 hover:bg-primary/5">
+                    Book Test Ride
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Featured Image on larger screens */}
+              <div className="hidden lg:block">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary-glow/20 rounded-2xl blur-xl transform rotate-6"></div>
+                  <img 
+                    src={escooterHero} 
+                    alt="EcoRide Electric Scooter" 
+                    className="relative z-10 w-full h-64 lg:h-80 object-cover rounded-2xl shadow-2xl"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
