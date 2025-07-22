@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_queries: {
+        Row: {
+          chatbot_response: string
+          created_at: string
+          id: string
+          original_question: string
+          status: string | null
+          updated_at: string
+          user_feedback: string | null
+          user_id: string | null
+        }
+        Insert: {
+          chatbot_response: string
+          created_at?: string
+          id?: string
+          original_question: string
+          status?: string | null
+          updated_at?: string
+          user_feedback?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          chatbot_response?: string
+          created_at?: string
+          id?: string
+          original_question?: string
+          status?: string | null
+          updated_at?: string
+          user_feedback?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
