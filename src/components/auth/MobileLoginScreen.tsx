@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Smartphone, ArrowRight } from "lucide-react";
+import escooterHero from "@/assets/escooter-hero.jpg";
 
 interface MobileLoginScreenProps {
   onSendOTP: (mobile: string) => Promise<void>;
@@ -27,20 +28,40 @@ export const MobileLoginScreen = ({ onSendOTP, isLoading = false }: MobileLoginS
 
   return (
     <div className="min-h-screen bg-[--gradient-bg] flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
-        {/* Logo/Brand */}
-        <div className="text-center space-y-4">
-          <div className="w-20 h-20 mx-auto rounded-full bg-[--gradient-primary] flex items-center justify-center shadow-[--shadow-glow]">
-            <Smartphone className="w-10 h-10 text-primary-foreground" />
+      {/* Background Hero Image */}
+      <div className="fixed inset-0 z-0">
+        <img 
+          src={escooterHero} 
+          alt="Electric Scooter" 
+          className="w-full h-full object-cover opacity-10"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-background/95"></div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-md space-y-8">
+        {/* Hero Image Section */}
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="w-32 h-32 mx-auto rounded-2xl overflow-hidden shadow-2xl ring-2 ring-primary/20">
+              <img 
+                src={escooterHero} 
+                alt="ElectroSupport - Electric Scooter" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"></div>
+            </div>
+            <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-full bg-[--gradient-primary] flex items-center justify-center shadow-[--shadow-glow] animate-pulse">
+              <Smartphone className="w-6 h-6 text-primary-foreground" />
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">ElectroSupport</h1>
-            <p className="text-muted-foreground">Your electric scooter companion</p>
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold text-foreground animate-fade-in">ElectroSupport</h1>
+            <p className="text-muted-foreground text-lg animate-fade-in">Your electric scooter companion</p>
           </div>
         </div>
 
         {/* Login Card */}
-        <Card className="shadow-[--shadow-card] border-0 bg-card/80 backdrop-blur-sm">
+        <Card className="shadow-[--shadow-card] border-0 bg-card/90 backdrop-blur-lg animate-scale-in">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-xl">Welcome Back</CardTitle>
             <CardDescription>
