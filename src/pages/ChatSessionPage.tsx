@@ -12,6 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDomainQuestions } from '@/hooks/useDomainQuestions';
 import * as z from 'zod';
 
 interface Message {
@@ -42,21 +43,12 @@ const titleSchema = z.object({
 type FeedbackForm = z.infer<typeof feedbackSchema>;
 type TitleForm = z.infer<typeof titleSchema>;
 
-const PREDEFINED_QUESTIONS = [
-  "What are the different scooter models available?",
-  "How long does the battery last?",
-  "How do I charge my scooter?",
-  "What's the maximum speed and range?",
-  "How do I troubleshoot if my scooter won't start?",
-  "What's covered under warranty?",
-  "How do I check my order status?",
-  "What safety gear do you recommend?"
-];
 
 const ChatSessionPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { questions: domainQuestions } = useDomainQuestions();
   const [messages, setMessages] = useState<Message[]>([]);
   const [session, setSession] = useState<ChatSession | null>(null);
   const [newMessage, setNewMessage] = useState('');
@@ -519,19 +511,19 @@ const ChatSessionPage: React.FC = () => {
         <div className="border-t bg-card p-2 sm:p-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
-              {PREDEFINED_QUESTIONS.map((question, index) => (
+              {domainQuestions.map((item) => (
                 <Button
-                  key={index}
+                  key={item.id}
                   variant="outline"
                   size="sm"
                   onClick={() => {
                     setShowPredefinedQuestions(false);
-                    sendMessage(question);
+                    sendMessage(item.question);
                   }}
                   disabled={isLoading}
                   className="text-xs sm:text-sm"
                 >
-                  {question}
+                  {item.question}
                 </Button>
               ))}
             </div>

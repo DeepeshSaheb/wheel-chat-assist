@@ -12,6 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDomainQuestions } from '@/hooks/useDomainQuestions';
 import * as z from 'zod';
 
 interface Message {
@@ -33,19 +34,10 @@ interface ChatbotPageProps {
   onBack: () => void;
 }
 
-const PREDEFINED_QUESTIONS = [
-  "What are the different scooter models available?",
-  "How long does the battery last?",
-  "How do I charge my scooter?",
-  "What's the maximum speed and range?",
-  "How do I troubleshoot if my scooter won't start?",
-  "What's covered under warranty?",
-  "How do I check my order status?",
-  "What safety gear do you recommend?"
-];
 
 export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
   const navigate = useNavigate();
+  const { questions: domainQuestions } = useDomainQuestions();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -370,19 +362,19 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
         <div className="border-t bg-card p-2 sm:p-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
-              {PREDEFINED_QUESTIONS.map((question, index) => (
+              {domainQuestions.map((item) => (
                 <Button
-                  key={index}
+                  key={item.id}
                   variant="outline"
                   size="sm"
                   onClick={() => {
                     setShowPredefinedQuestions(false);
-                    sendMessage(question);
+                    sendMessage(item.question);
                   }}
                   disabled={isLoading}
                   className="text-xs sm:text-sm"
                 >
-                  {question}
+                  {item.question}
                 </Button>
               ))}
             </div>
