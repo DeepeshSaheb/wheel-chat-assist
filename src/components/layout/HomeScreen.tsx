@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +10,10 @@ import {
   User,
   Bell,
   Headphones,
-  Upload
+  Upload,
+  Bot
 } from "lucide-react";
+import { ChatbotPage } from "@/components/chat/ChatbotPage";
 
 interface HomeScreenProps {
   mobile: string;
@@ -18,13 +21,27 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
+  const [currentView, setCurrentView] = React.useState<'home' | 'chat'>('home');
+
+  if (currentView === 'chat') {
+    return <ChatbotPage onBack={() => setCurrentView('home')} />;
+  }
+
   const supportOptions = [
     {
-      icon: MessageCircle,
-      title: "Chat Support",
-      description: "Get instant help from our AI assistant",
+      icon: Bot,
+      title: "AI Chat Assistant",
+      description: "Get instant answers to scooter questions",
       action: "Start Chat",
       color: "bg-blue-500",
+      onClick: () => setCurrentView('chat'),
+    },
+    {
+      icon: MessageCircle,
+      title: "Live Chat Support",
+      description: "Connect with our support team",
+      action: "Start Chat",
+      color: "bg-green-500",
     },
     {
       icon: FileText,
@@ -126,6 +143,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
               <Card 
                 key={index}
                 className="bg-card/80 backdrop-blur-sm border-0 shadow-[--shadow-card] hover:shadow-[--shadow-glow] transition-[--transition-smooth] cursor-pointer group"
+                onClick={option.onClick}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
