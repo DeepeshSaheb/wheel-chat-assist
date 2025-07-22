@@ -7,6 +7,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import QueriesHistoryPage from "./pages/QueriesHistoryPage";
+import ChatHistoryPage from "./pages/ChatHistoryPage";
+import ChatSessionPage from "./pages/ChatSessionPage";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/queries" element={<QueriesHistoryPage />} />
+            <Route path="/chat-history" element={<ChatHistoryPage />} />
+            <Route path="/chat/:sessionId" element={<ChatSessionPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
