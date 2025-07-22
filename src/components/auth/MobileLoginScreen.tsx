@@ -6,22 +6,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Smartphone, ArrowRight } from "lucide-react";
 
 interface MobileLoginScreenProps {
-  onSendOTP: (mobile: string) => void;
+  onSendOTP: (mobile: string) => Promise<void>;
+  isLoading?: boolean;
 }
 
-export const MobileLoginScreen = ({ onSendOTP }: MobileLoginScreenProps) => {
+export const MobileLoginScreen = ({ onSendOTP, isLoading = false }: MobileLoginScreenProps) => {
   const [mobile, setMobile] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mobile.length !== 10) return;
     
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    onSendOTP(mobile);
-    setIsLoading(false);
+    await onSendOTP(mobile);
   };
 
   const formatMobile = (value: string) => {

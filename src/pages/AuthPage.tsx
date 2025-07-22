@@ -7,41 +7,73 @@ import { useToast } from "@/hooks/use-toast";
 export const AuthPage = () => {
   const [currentStep, setCurrentStep] = useState<"mobile" | "otp">("mobile");
   const [mobile, setMobile] = useState("");
-  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { sendOTP, verifyOTP } = useAuth();
   const { toast } = useToast();
 
-  const handleSendOTP = (mobileNumber: string) => {
+  const handleSendOTP = async (mobileNumber: string) => {
+    setIsLoading(true);
+    const { error } = await sendOTP(mobileNumber);
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+    
     setMobile(mobileNumber);
     setCurrentStep("otp");
+    setIsLoading(false);
     toast({
       title: "OTP Sent",
       description: `Verification code sent to +91 ${mobileNumber}`,
     });
   };
 
-  const handleVerifyOTP = (otp: string) => {
-    // In a real app, this would verify with backend
-    // For demo, accept any 6-digit OTP
-    if (otp.length === 6) {
-      login(mobile);
-      toast({
-        title: "Login Successful",
-        description: "Welcome to ElectroSupport!",
-      });
-    } else {
+  const handleVerifyOTP = async (otp: string) => {
+    setIsLoading(true);
+    const { error } = await verifyOTP(mobile, otp);
+    
+    if (error) {
       toast({
         title: "Invalid OTP",
-        description: "Please enter a valid 6-digit code",
+        description: error,
         variant: "destructive",
       });
+      setIsLoading(false);
+      return;
     }
+    
+    setIsLoading(false);
+    toast({
+      title: "Login Successful",
+      description: "Welcome to ElectroSupport!",
+    });
   };
 
   const handleBack = () => {
     setCurrentStep("mobile");
   };
 
-  const handleResendOTP = () => {
+  const handleResendOTP = async () => {
+    setIsLoading(true);
+    const { error } = await sendOTP(mobile);
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+    
+    setIsLoading(false);
     toast({
       title: "OTP Resent",
       description: `New verification code sent to +91 ${mobile}`,
@@ -51,7 +83,7 @@ export const AuthPage = () => {
   return (
     <>
       {currentStep === "mobile" && (
-        <MobileLoginScreen onSendOTP={handleSendOTP} />
+        <MobileLoginScreen onSendOTP={handleSendOTP} isLoading={isLoading} />
       )}
       {currentStep === "otp" && (
         <OTPVerificationScreen
@@ -59,6 +91,7 @@ export const AuthPage = () => {
           onVerifyOTP={handleVerifyOTP}
           onBack={handleBack}
           onResendOTP={handleResendOTP}
+          isLoading={isLoading}
         />
       )}
     </>

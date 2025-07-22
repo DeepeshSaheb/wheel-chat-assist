@@ -6,19 +6,20 @@ import { ArrowLeft, CheckCircle, RotateCcw } from "lucide-react";
 
 interface OTPVerificationScreenProps {
   mobile: string;
-  onVerifyOTP: (otp: string) => void;
+  onVerifyOTP: (otp: string) => Promise<void>;
   onBack: () => void;
-  onResendOTP: () => void;
+  onResendOTP: () => Promise<void>;
+  isLoading?: boolean;
 }
 
 export const OTPVerificationScreen = ({ 
   mobile, 
   onVerifyOTP, 
   onBack, 
-  onResendOTP 
+  onResendOTP,
+  isLoading = false
 }: OTPVerificationScreenProps) => {
   const [otp, setOtp] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
 
@@ -40,18 +41,14 @@ export const OTPVerificationScreen = ({
   const handleVerifyOTP = async () => {
     if (otp.length !== 6) return;
     
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    onVerifyOTP(otp);
-    setIsLoading(false);
+    await onVerifyOTP(otp);
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     setResendTimer(30);
     setCanResend(false);
     setOtp("");
-    onResendOTP();
+    await onResendOTP();
   };
 
   useEffect(() => {
