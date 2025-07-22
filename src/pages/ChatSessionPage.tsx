@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDomainQuestions } from '@/hooks/useDomainQuestions';
 import { useAuth } from '@/context/AuthContext';
+import { MessageContent } from '@/components/chat/MessageContent';
 import * as z from 'zod';
 
 interface Message {
@@ -460,7 +461,7 @@ const ChatSessionPage: React.FC = () => {
                     ? 'bg-primary text-primary-foreground' 
                     : 'bg-muted'
                 }`}>
-                  <p className="whitespace-pre-wrap text-sm sm:text-base">{message.content}</p>
+                  <MessageContent content={message.content} isUser={message.is_user} />
                   {message.file_url && message.file_name && (
                     <div className="mt-2 p-2 bg-background/10 rounded flex items-center gap-2">
                       <Paperclip className="w-4 h-4" />
