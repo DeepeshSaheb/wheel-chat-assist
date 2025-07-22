@@ -40,7 +40,7 @@ const QueriesHistoryPage: React.FC = () => {
           description: "Please log in to view your query history.",
           variant: "destructive"
         });
-        navigate('/chat');
+        navigate('/');
         return;
       }
       const {
@@ -85,7 +85,7 @@ const QueriesHistoryPage: React.FC = () => {
     return <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/chat')}>
+            <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <h1 className="text-3xl font-bold text-foreground">Queries</h1>
@@ -101,7 +101,7 @@ const QueriesHistoryPage: React.FC = () => {
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/chat')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-3xl font-bold text-foreground">Queries</h1>
@@ -115,7 +115,7 @@ const QueriesHistoryPage: React.FC = () => {
               <p className="text-muted-foreground mb-6">
                 You haven't submitted any queries to the chatbot yet.
               </p>
-              <Button onClick={() => navigate('/chat')}>
+              <Button onClick={() => navigate('/')}>
                 Start a conversation
               </Button>
             </CardContent>

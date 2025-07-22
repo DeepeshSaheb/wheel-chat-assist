@@ -38,7 +38,7 @@ const ChatHistoryPage: React.FC = () => {
           description: "Please log in to view your chat history.",
           variant: "destructive"
         });
-        navigate('/chat');
+        navigate('/');
         return;
       }
 
@@ -157,7 +157,7 @@ const ChatHistoryPage: React.FC = () => {
     return <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/chat')}>
+            <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <h1 className="text-3xl font-bold text-foreground">Chat History</h1>
@@ -173,7 +173,7 @@ const ChatHistoryPage: React.FC = () => {
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/chat')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-3xl font-bold text-foreground">Chat History</h1>
