@@ -256,6 +256,9 @@ const ChatSessionPage: React.FC = () => {
   };
 
   const sendMessage = async (message?: string, file?: File) => {
+    // Hide predefined questions immediately when any message is sent
+    setShowPredefinedQuestions(false);
+    
     const messageText = message || newMessage.trim();
     if (!messageText && !file) return;
 
@@ -290,9 +293,6 @@ const ChatSessionPage: React.FC = () => {
     setNewMessage('');
     setSelectedFile(null);
     setIsLoading(true);
-
-    // Hide predefined questions after first message
-    setShowPredefinedQuestions(false);
 
     // Save user message to database
     await saveMessage(messageText, true, fileUrl, fileName);
