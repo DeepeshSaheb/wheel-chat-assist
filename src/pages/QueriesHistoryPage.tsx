@@ -70,6 +70,47 @@ const QueriesHistoryPage: React.FC = () => {
       setLoading(false);
     }
   };
+  const createNewChat = async () => {
+    try {
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to create a new chat.",
+          variant: "destructive"
+        });
+        return;
+      }
+      const {
+        data,
+        error
+      } = await supabase.from('chat_sessions').insert([{
+        user_id: user.id,
+        title: `Chat ${format(new Date(), 'MMM d, h:mm a')}`
+      }]).select().single();
+      if (error) {
+        console.error('Error creating session:', error);
+        toast({
+          title: "Error creating chat",
+          description: "Failed to create a new chat session.",
+          variant: "destructive"
+        });
+        return;
+      }
+      navigate(`/chat/${data.id}`);
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive"
+      });
+    }
+  };
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case 'resolved':
@@ -85,7 +126,7 @@ const QueriesHistoryPage: React.FC = () => {
     return <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+            <Button variant="ghost" size="icon" onClick={createNewChat}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <h1 className="text-3xl font-bold text-foreground">Queries</h1>
@@ -101,7 +142,7 @@ const QueriesHistoryPage: React.FC = () => {
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+          <Button variant="ghost" size="icon" onClick={createNewChat}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-3xl font-bold text-foreground">Queries</h1>
@@ -115,7 +156,7 @@ const QueriesHistoryPage: React.FC = () => {
               <p className="text-muted-foreground mb-6">
                 You haven't submitted any queries to the chatbot yet.
               </p>
-              <Button onClick={() => navigate('/')}>
+              <Button onClick={createNewChat}>
                 Start a conversation
               </Button>
             </CardContent>
