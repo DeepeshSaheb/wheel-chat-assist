@@ -65,6 +65,7 @@ const ChatSessionPage: React.FC = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string>('');
   const [isTitleEditOpen, setIsTitleEditOpen] = useState(false);
+  const [showPredefinedQuestions, setShowPredefinedQuestions] = useState(true);
   const [loading, setLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -144,7 +145,7 @@ const ChatSessionPage: React.FC = () => {
 
       setMessages(messagesData || []);
 
-      // If this is a new session with no messages, add welcome message
+      // If this is a new session with no messages, add welcome message and show predefined questions
       if (!messagesData || messagesData.length === 0) {
         const welcomeMessage: Message = {
           id: 'welcome',
@@ -153,6 +154,10 @@ const ChatSessionPage: React.FC = () => {
           created_at: new Date().toISOString()
         };
         setMessages([welcomeMessage]);
+        setShowPredefinedQuestions(true);
+      } else {
+        // If there are existing messages, hide predefined questions
+        setShowPredefinedQuestions(false);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -285,6 +290,9 @@ const ChatSessionPage: React.FC = () => {
     setNewMessage('');
     setSelectedFile(null);
     setIsLoading(true);
+
+    // Hide predefined questions after first message
+    setShowPredefinedQuestions(false);
 
     // Save user message to database
     await saveMessage(messageText, true, fileUrl, fileName);
@@ -506,25 +514,27 @@ const ChatSessionPage: React.FC = () => {
         </div>
       </ScrollArea>
 
-      {/* Predefined Questions */}
-      <div className="border-t bg-card p-2 sm:p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
-            {PREDEFINED_QUESTIONS.map((question, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                onClick={() => sendMessage(question)}
-                disabled={isLoading}
-                className="text-xs sm:text-sm"
-              >
-                {question}
-              </Button>
-            ))}
+      {/* Predefined Questions - Only show for new chats */}
+      {showPredefinedQuestions && (
+        <div className="border-t bg-card p-2 sm:p-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
+              {PREDEFINED_QUESTIONS.map((question, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => sendMessage(question)}
+                  disabled={isLoading}
+                  className="text-xs sm:text-sm"
+                >
+                  {question}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Input Area */}
       <div className="border-t bg-card p-2 sm:p-4">
