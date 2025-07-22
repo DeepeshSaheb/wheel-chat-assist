@@ -71,7 +71,7 @@ export const MobileLoginScreen = ({ onSendOTP, isLoading = false }: MobileLoginS
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-[--gradient-primary] hover:scale-[1.02] transition-[--transition-smooth] shadow-[--shadow-glow] text-base font-medium"
+                className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] transition-all duration-300 shadow-lg text-base font-medium"
                 disabled={mobile.length !== 10 || isLoading}
               >
                 {isLoading ? (
