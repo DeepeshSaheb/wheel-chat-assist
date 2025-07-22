@@ -48,7 +48,6 @@ export const MobileLoginScreen = ({ onSendOTP, isLoading = false }: MobileLoginS
                 alt="ElectroSupport - Electric Scooter" 
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"></div>
             </div>
             <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-full bg-[--gradient-primary] flex items-center justify-center shadow-[--shadow-glow] animate-pulse">
               <Smartphone className="w-6 h-6 text-primary-foreground" />
