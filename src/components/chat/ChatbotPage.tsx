@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Send, Bot, User, ArrowLeft, Paperclip, ThumbsDown, X } from 'lucide-react';
+import { Send, Bot, User, ArrowLeft, Paperclip, ThumbsDown, X, History } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useForm } from 'react-hook-form';
@@ -262,10 +262,19 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({ onBack }) => {
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1">
           <Bot className="h-6 w-6 text-primary" />
           <h1 className="text-lg font-semibold">Scooter Support Chat</h1>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.open('/queries', '_blank')}
+          className="flex items-center gap-2"
+        >
+          <History className="h-4 w-4" />
+          View History
+        </Button>
       </div>
 
       {/* Chat Messages */}
