@@ -3,89 +3,62 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Bot,
-  LogOut, 
-  User,
-  Bell,
-  Zap,
-  Battery,
-  MapPin,
-  Star,
-  Calendar,
-  Clock,
-  Shield,
-  ChevronRight,
-  Sparkles,
-  Package
-} from "lucide-react";
+import { Bot, LogOut, User, Bell, Zap, Battery, MapPin, Star, Calendar, Clock, Shield, ChevronRight, Sparkles, Package } from "lucide-react";
 import escooterHero from "@/assets/escooter-hero.jpg";
-
 interface HomeScreenProps {
   mobile: string;
   onLogout: () => void;
 }
-
-export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
+export const HomeScreen = ({
+  mobile,
+  onLogout
+}: HomeScreenProps) => {
   const navigate = useNavigate();
-
-  const supportOptions = [
-    {
-      icon: Bot,
-      title: "Evolve - AI Assistant",
-      description: "Get instant answers about your escooter",
-      action: "Start Chat",
-      onClick: () => navigate('/chat'),
-    },
-    {
-      icon: Package,
-      title: "My Orders",
-      description: "Track your electric scooter orders & delivery status",
-      action: "View Orders",
-      onClick: () => navigate('/orders'),
-    }
-  ];
-
-  const escooterFeatures = [
-    {
-      icon: Zap,
-      title: "High Performance",
-      description: "Up to 50km range on single charge",
-      color: "bg-gradient-to-r from-yellow-400 to-orange-500"
-    },
-    {
-      icon: Battery,
-      title: "Fast Charging",
-      description: "0-80% charge in just 3 hours",
-      color: "bg-gradient-to-r from-green-400 to-cyan-500"
-    },
-    {
-      icon: Shield,
-      title: "Safety First",
-      description: "Advanced braking & LED lights",
-      color: "bg-gradient-to-r from-blue-400 to-purple-500"
-    }
-  ];
-
-  const newLaunchProducts = [
-    {
-      name: "EcoRide Pro X",
-      price: "₹89,999",
-      features: ["65km Range", "Dual Motors", "Smart Dashboard"],
-      status: "Pre-Order",
-      image: "🛴"
-    },
-    {
-      name: "EcoRide City",
-      price: "₹45,999", 
-      features: ["35km Range", "Lightweight", "Foldable"],
-      status: "Available",
-      image: "🛵"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen" style={{ background: 'var(--gradient-bg)' }}>
+  const supportOptions = [{
+    icon: Bot,
+    title: "Evolve - AI Assistant",
+    description: "Get instant answers about your escooter",
+    action: "Start Chat",
+    onClick: () => navigate('/chat')
+  }, {
+    icon: Package,
+    title: "My Orders",
+    description: "Track your electric scooter orders & delivery status",
+    action: "View Orders",
+    onClick: () => navigate('/orders')
+  }];
+  const escooterFeatures = [{
+    icon: Zap,
+    title: "High Performance",
+    description: "Up to 50km range on single charge",
+    color: "bg-gradient-to-r from-yellow-400 to-orange-500"
+  }, {
+    icon: Battery,
+    title: "Fast Charging",
+    description: "0-80% charge in just 3 hours",
+    color: "bg-gradient-to-r from-green-400 to-cyan-500"
+  }, {
+    icon: Shield,
+    title: "Safety First",
+    description: "Advanced braking & LED lights",
+    color: "bg-gradient-to-r from-blue-400 to-purple-500"
+  }];
+  const newLaunchProducts = [{
+    name: "EcoRide Pro X",
+    price: "₹89,999",
+    features: ["65km Range", "Dual Motors", "Smart Dashboard"],
+    status: "Pre-Order",
+    image: "🛴"
+  }, {
+    name: "EcoRide City",
+    price: "₹45,999",
+    features: ["35km Range", "Lightweight", "Foldable"],
+    status: "Available",
+    image: "🛵"
+  }];
+  return <div className="min-h-screen" style={{
+    background: 'var(--gradient-bg)'
+  }}>
       {/* Header */}
       <header className="bg-card/90 backdrop-blur-lg border-b border-border/30 p-4 sticky top-0 z-10">
         <div className="flex items-center justify-between max-w-6xl mx-auto">
@@ -102,12 +75,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/10">
               <Bell className="w-5 h-5" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onLogout}
-              className="rounded-full hover:bg-destructive/10 hover:text-destructive"
-            >
+            <Button variant="ghost" size="icon" onClick={onLogout} className="rounded-full hover:bg-destructive/10 hover:text-destructive">
               <LogOut className="w-5 h-5" />
             </Button>
           </div>
@@ -117,14 +85,12 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
       {/* Main Content */}
       <main className="p-4 max-w-6xl mx-auto space-y-8">
         {/* Hero Section with Escooter Image */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card via-card/80 to-primary/5 border border-border/30" style={{ boxShadow: 'var(--shadow-card)' }}>
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card via-card/80 to-primary/5 border border-border/30" style={{
+        boxShadow: 'var(--shadow-card)'
+      }}>
           {/* Background Image */}
           <div className="absolute inset-0">
-            <img 
-              src={escooterHero} 
-              alt="Modern Electric Scooter" 
-              className="w-full h-full object-cover opacity-20"
-            />
+            <img src={escooterHero} alt="Modern Electric Scooter" className="w-full h-full object-cover opacity-20" />
             <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/40"></div>
           </div>
           
@@ -160,11 +126,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
               <div className="hidden lg:block">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary-glow/20 rounded-2xl blur-xl transform rotate-6"></div>
-                  <img 
-                    src={escooterHero} 
-                    alt="EcoRide Electric Scooter" 
-                    className="relative z-10 w-full h-64 lg:h-80 object-cover rounded-2xl shadow-2xl"
-                  />
+                  <img src={escooterHero} alt="EcoRide Electric Scooter" className="relative z-10 w-full h-64 lg:h-80 object-cover rounded-2xl shadow-2xl" />
                 </div>
               </div>
             </div>
@@ -176,12 +138,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
           <h3 className="text-xl font-bold text-foreground">Need Help?</h3>
           
           <div className="grid gap-4">
-            {supportOptions.map((option, index) => (
-              <Card 
-                key={index}
-                className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 cursor-pointer group"
-                onClick={option.onClick}
-              >
+            {supportOptions.map((option, index) => <Card key={index} className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-xl hover:scale-[1.01] transition-all duration-300 cursor-pointer group" onClick={option.onClick}>
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-3 sm:gap-4">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-r from-primary to-primary-glow flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
@@ -195,18 +152,13 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
                         {option.description}
                       </p>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="text-primary hover:bg-primary/10 rounded-xl px-2 sm:px-3 flex-shrink-0"
-                    >
+                    <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 rounded-xl px-2 sm:px-3 flex-shrink-0">
                       <span className="hidden sm:inline">{option.action}</span>
                       <ChevronRight className="w-4 h-4 sm:ml-1" />
                     </Button>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
 
@@ -263,38 +215,28 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {newLaunchProducts.map((product, index) => (
-              <Card 
-                key={index}
-                className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer overflow-hidden"
-              >
+            {newLaunchProducts.map((product, index) => <Card key={index} className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="text-4xl">{product.image}</div>
-                    <Badge 
-                      variant={product.status === "Available" ? "default" : "outline"}
-                      className={product.status === "Available" ? "bg-green-500" : "bg-orange-500"}
-                    >
+                    <Badge variant={product.status === "Available" ? "default" : "outline"} className={product.status === "Available" ? "bg-green-500" : "bg-orange-500"}>
                       {product.status}
                     </Badge>
                   </div>
                   <h4 className="text-xl font-bold text-foreground mb-2">{product.name}</h4>
                   <p className="text-2xl font-bold text-primary mb-3">{product.price}</p>
                   <div className="space-y-2 mb-4">
-                    {product.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
+                    {product.features.map((feature, idx) => <div key={idx} className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
                         <span className="text-sm text-muted-foreground">{feature}</span>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                   <Button className="w-full bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90 text-primary-foreground rounded-xl">
                     {product.status === "Available" ? "Buy Now" : "Pre-Order"}
                     <ChevronRight className="w-4 h-4 ml-2" />
                   </Button>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
 
@@ -303,8 +245,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
           <h3 className="text-xl font-bold text-foreground">Why Choose EcoRide?</h3>
           
           <div className="grid md:grid-cols-3 gap-6">
-            {escooterFeatures.map((feature, index) => (
-              <Card key={index} className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-lg transition-all duration-300 group">
+            {escooterFeatures.map((feature, index) => <Card key={index} className="bg-card/80 backdrop-blur-sm border-border/30 hover:shadow-lg transition-all duration-300 group">
                 <CardContent className="p-6 text-center">
                   <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl ${feature.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                     <feature.icon className="w-8 h-8 text-white" />
@@ -312,8 +253,7 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
                   <h4 className="text-lg font-bold text-foreground mb-2">{feature.title}</h4>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
 
@@ -349,22 +289,11 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/30 transition-colors">
-                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-pink-500"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">AI Chat session completed</p>
-                    <p className="text-xs text-muted-foreground">Battery care tips discussed</p>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    3 days ago
-                  </div>
-                </div>
+                
               </div>
             </CardContent>
           </Card>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
