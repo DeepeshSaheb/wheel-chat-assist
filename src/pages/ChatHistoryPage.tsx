@@ -215,8 +215,10 @@ const ChatHistoryPage: React.FC = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {session.last_message}
+                  <p className="text-sm text-muted-foreground line-clamp-2 break-words overflow-hidden">
+                    {session.last_message && session.last_message.length > 100 
+                      ? `${session.last_message.substring(0, 100)}...` 
+                      : session.last_message}
                   </p>
                 </CardContent>
               </Card>)}
