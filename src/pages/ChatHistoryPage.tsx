@@ -173,13 +173,13 @@ const ChatHistoryPage: React.FC = () => {
         </div>
       </div>;
   }
-  return <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+  return <div className="min-h-screen bg-background overflow-x-hidden">
+      <div className="container mx-auto px-4 py-8 max-w-full">
         <div className="flex items-center justify-between mb-8">
           <Button variant="ghost" size="icon" onClick={createNewChat}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <h1 className="text-3xl font-bold text-foreground">Chat History</h1>
+          <h1 className="text-3xl font-bold text-foreground truncate">Chat History</h1>
           <div className="w-10"></div>
         </div>
 
@@ -195,29 +195,29 @@ const ChatHistoryPage: React.FC = () => {
                 Start New Chat
               </Button>
             </CardContent>
-          </Card> : <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {sessions.map(session => <Card key={session.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/chat/${session.id}`)}>
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-lg text-foreground truncate">
+          </Card> : <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-full">
+            {sessions.map(session => <Card key={session.id} className="cursor-pointer hover:shadow-md transition-shadow min-w-0 w-full" onClick={() => navigate(`/chat/${session.id}`)}>
+                <CardHeader className="pb-2 min-w-0">
+                  <div className="flex items-start justify-between gap-2 min-w-0">
+                    <CardTitle className="text-lg text-foreground truncate min-w-0 flex-1">
                       {session.title}
                     </CardTitle>
                     <Button variant="ghost" size="sm" onClick={e => deleteSession(session.id, e)} className="text-muted-foreground hover:text-destructive flex-shrink-0">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    {format(new Date(session.updated_at), 'PPP')}
-                    <Badge variant="outline">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+                    <Clock className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{format(new Date(session.updated_at), 'PPP')}</span>
+                    <Badge variant="outline" className="flex-shrink-0">
                       {session.message_count} messages
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-sm text-muted-foreground line-clamp-2 break-words overflow-hidden">
-                    {session.last_message && session.last_message.length > 100 
-                      ? `${session.last_message.substring(0, 100)}...` 
+                <CardContent className="pt-0 min-w-0">
+                  <p className="text-sm text-muted-foreground break-words overflow-hidden overflow-ellipsis">
+                    {session.last_message && session.last_message.length > 80 
+                      ? `${session.last_message.substring(0, 80)}...` 
                       : session.last_message}
                   </p>
                 </CardContent>
