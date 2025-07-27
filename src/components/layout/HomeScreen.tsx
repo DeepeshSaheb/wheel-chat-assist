@@ -16,7 +16,8 @@ import {
   Clock,
   Shield,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Package
 } from "lucide-react";
 import escooterHero from "@/assets/escooter-hero.jpg";
 
@@ -35,6 +36,13 @@ export const HomeScreen = ({ mobile, onLogout }: HomeScreenProps) => {
       description: "Get instant answers about your escooter",
       action: "Start Chat",
       onClick: () => navigate('/chat'),
+    },
+    {
+      icon: Package,
+      title: "My Orders",
+      description: "Track your electric scooter orders & delivery status",
+      action: "View Orders",
+      onClick: () => navigate('/orders'),
     }
   ];
 

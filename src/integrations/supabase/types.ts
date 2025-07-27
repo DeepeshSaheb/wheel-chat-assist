@@ -106,6 +106,51 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string
+          delivery_date: string | null
+          id: string
+          order_date: string
+          order_number: string
+          product_model: string
+          product_name: string
+          shipping_address: string
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delivery_date?: string | null
+          id?: string
+          order_date?: string
+          order_number: string
+          product_model: string
+          product_name: string
+          shipping_address: string
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delivery_date?: string | null
+          id?: string
+          order_date?: string
+          order_number?: string
+          product_model?: string
+          product_name?: string
+          shipping_address?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_queries: {
         Row: {
           chatbot_response: string
